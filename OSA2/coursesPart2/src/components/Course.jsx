@@ -9,5 +9,4 @@ const Course = (props) => {
         </div>
     )
 }
-//<Content course = {props.course}/>
 export default Course
