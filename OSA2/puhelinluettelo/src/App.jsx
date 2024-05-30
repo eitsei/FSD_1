@@ -19,7 +19,6 @@ const App = () => {
   ? persons
   : persons.filter(person => person.name.toUpperCase().includes(newFilter.toUpperCase()))
 
-
   return (
     <div>
       
