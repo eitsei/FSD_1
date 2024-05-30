@@ -14,7 +14,6 @@ const Part = (props) => {
       <p>{props.content} {props.exercises}</p>
     </>
   )
-
 }
 
 const Content = (props) => {
