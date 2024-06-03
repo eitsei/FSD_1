@@ -1,12 +1,14 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import usePhonebook from "./components/PhoneBook"
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
+import PersonsService from "./services/PersonsService"
 
 const App = () => {
   const {
     persons,
+    setPersons,
     newName,
     newNumber,
     addPerson,
@@ -17,12 +19,21 @@ const App = () => {
     deletePersons
   } = usePhonebook()
 
-  const personsToShow = 
-    newFilter === ""
-      ? persons
-      : persons.filter(person => 
-          person.name.toUpperCase().includes(newFilter.toUpperCase())
-        )
+  const [personsToShow, setPersonsToShow] = useState([])
+
+  useEffect(() => {
+    PersonsService.getAll()
+                  .then(p => setPersons(p))
+    setPersonsToShow(
+      newFilter === ""
+        ? persons
+        : persons.filter(person => 
+            person.name.toUpperCase().includes(newFilter.toUpperCase())
+          )
+    )
+    //console.log("persons to show:",personsToShow)
+  }, [persons, newFilter])
+
 
   return (
     <div>

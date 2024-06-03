@@ -38,7 +38,8 @@ const usePhonebook = () => {
             .then(response => 
               {
               const rData = response.data
-              setPersons(persons.concat(rData))
+              setPersons(prevPersons =>
+                prevPersons.concat(rData))
               //console.log('Phonebookin response data:', response)
               //console.log('PhoneBookin persons: ', persons)
               setNewName('')
@@ -61,6 +62,7 @@ const usePhonebook = () => {
 
   return {
     persons,
+    setPersons,
     newName,
     newNumber,
     addPerson,
