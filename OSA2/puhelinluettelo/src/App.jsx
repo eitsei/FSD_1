@@ -1,7 +1,8 @@
-import phonebook from "./components/PhoneBook"
+import React from 'react'
+import usePhonebook from "./components/PhoneBook"
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import Filtter from './components/Filter'
+import Filter from './components/Filter'
 
 const App = () => {
   const {
@@ -12,18 +13,21 @@ const App = () => {
     handleNameChange,
     handleNumberChange,
     newFilter,
-    setNewFilter
-  } = phonebook()
+    setNewFilter,
+    deletePersons
+  } = usePhonebook()
 
-  const personsToShow = newFilter === ""
-  ? persons
-  : persons.filter(person => person.name.toUpperCase().includes(newFilter.toUpperCase()))
+  const personsToShow = 
+    newFilter === ""
+      ? persons
+      : persons.filter(person => 
+          person.name.toUpperCase().includes(newFilter.toUpperCase())
+        )
 
   return (
     <div>
-      
       <h2>Phonebook</h2>
-      <Filtter newFilter = {newFilter} setNewFilter = {setNewFilter} />
+      <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
       <h2>Add a new</h2>
       <PersonForm
         newName={newName}
@@ -33,11 +37,9 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePersons={deletePersons} />
     </div>
-    
   )
-
 }
 
 export default App
