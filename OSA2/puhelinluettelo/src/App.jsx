@@ -5,6 +5,8 @@ import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonsService from "./services/PersonsService"
 
+
+
 const App = () => {
   const {
     persons,
@@ -16,14 +18,17 @@ const App = () => {
     handleNumberChange,
     newFilter,
     setNewFilter,
-    deletePersons
+    deletePersons,
+    Notification,
+    errorMessage
   } = usePhonebook()
-
+  
   const [personsToShow, setPersonsToShow] = useState([])
 
   useEffect(() => {
     PersonsService.getAll()
                   .then(p => setPersons(p))
+
     setPersonsToShow(
       newFilter === ""
         ? persons
@@ -31,13 +36,12 @@ const App = () => {
             person.name.toUpperCase().includes(newFilter.toUpperCase())
           )
     )
-    //console.log("persons to show:",personsToShow)
   }, [persons, newFilter])
-
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
       <h2>Add a new</h2>
       <PersonForm

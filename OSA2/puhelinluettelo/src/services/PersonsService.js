@@ -4,14 +4,12 @@ const baseUrl = 'http://localhost:3001/persons'
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => {
-    //console.log("Get all response data:", response.data)
     return response.data})
 }
 
 const create = newObject => {
   const request = axios.post(baseUrl, newObject)
   return request.then(response => {
-    //console.log("Createn response data:",response.data)
     return response.data})
 }
 
