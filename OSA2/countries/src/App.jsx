@@ -4,11 +4,13 @@ import Countries from './components/countries'
 import CountriesService from "./services/CountriesService"
 
 
+
 const App = () => {
 
   const [countries, setCountries] = useState([])
   const [countriesToShow, setCountriesToShow] = useState([])
   const [newFilter, setNewFilter] = useState("")
+  const [selectedCountry, setSelectedCountry] = useState(null)
   
   useEffect(() => {
     CountriesService.getAll().then(countries => setCountries(countries))},[])
@@ -20,16 +22,14 @@ const App = () => {
         : countries.filter(country =>
            
           country.name.common.toUpperCase().includes(newFilter.toUpperCase())
-          )
-          
-    )
-  }, [newFilter])
-  // countriesToShow, newFilter
+          ))
+    setSelectedCountry(null)
+  }, [countries, newFilter])
+
   return(
   <div> 
-      <h1>Testi</h1>
       <Filter newFilter={newFilter} setNewFilter={setNewFilter}/>
-      <Countries countries={countriesToShow} />
+      <Countries countries={countriesToShow} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
   </div>)}
 
 export default App
