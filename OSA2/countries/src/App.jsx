@@ -1,28 +1,29 @@
 import { useState, useEffect } from 'react'
 import Filter from "./components/countryFilter"
 import Countries from './components/countries'
-import getAll from "./services/CountriesService"
+import CountriesService from "./services/CountriesService"
 
 
 const App = () => {
 
+  const [countries, setCountries] = useState([])
   const [countriesToShow, setCountriesToShow] = useState([])
   const [newFilter, setNewFilter] = useState("")
   
   useEffect(() => {
-    getAll()
-                  .then(countries => setCountriesToShow(countries))
+    CountriesService.getAll().then(countries => setCountries(countries))},[])
 
+  useEffect(() => {
     setCountriesToShow(
       newFilter === ""
-        ? countriesToShow
-        : countriesToShow.filter(country =>
+        ? countries
+        : countries.filter(country =>
            
           country.name.common.toUpperCase().includes(newFilter.toUpperCase())
           )
           
     )
-  }, [])
+  }, [newFilter])
   // countriesToShow, newFilter
   return(
   <div> 

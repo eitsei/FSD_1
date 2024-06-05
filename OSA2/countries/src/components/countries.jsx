@@ -1,27 +1,28 @@
 import Country from "./country"
+import CountryInfo from "./countryInfo"
 
 const Countries = ({countries}) =>{
-    console.log('countries length: ', countries.length)
-    if (countries.length  <= 10)
-        {return(
-            <div>
-                {countries.map(c =>{
-                    if (c) {
-                        //console.log('Country:, ',c.name.common)
-                    return(                
-                        <Country 
-                            key = {c.id} 
-                            country = {c}/>
-                )}
-                })}
-            </div>)}
-    else if (countries.length  === 1){
+    if (countries.length  === 1){
         return(
             <div>
-                <p>Testi</p>
+                <CountryInfo 
+                            key = {countries[0].id} 
+                            country = {countries[0]}/>
             </div>
         )
     }
+
+    else if (countries.length  <= 10){
+        return(
+            <div>
+                {countries.map(c =>{
+                    if (c) {
+                    return(                
+                        <Country 
+                            key = {c.id} country = {c}/>
+                )}
+                })}
+            </div>)}
     
     else {
         return(
