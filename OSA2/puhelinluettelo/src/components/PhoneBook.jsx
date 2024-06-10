@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import PersonsService from "../services/PersonsService"
 
 const Phonebook = () => {
@@ -8,7 +8,6 @@ const Phonebook = () => {
   const [newFilter, setNewFilter] = useState("")
   const [errorMessage, setErrorMessage] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState("info")
-
 
   const errorMessageFunc = (person, service) => {
     if (service ==="delete"){
@@ -34,84 +33,66 @@ const Phonebook = () => {
   }
 
   const deletePersons = id => {
-    if (window.confirm(`Delete ${persons.find(p=> p.id === id).name} ?`)){
-      const changedPersons = persons.filter(p => p.id !== id)
+    const person = persons.find(p => p.id === id);
+    if (!person) return;
+
+    if (window.confirm(`Delete ${person.name}?`)){
       PersonsService.remove(id)
-                    .then(personDelete => {
-                      setPersons(changedPersons)
-                    })
-                    .catch(error => {
-                      errorMessageFunc(persons.find(p=> p.id === id).name,"deleteWarning")
-                    })
-      errorMessageFunc(persons.find(p=> p.id === id).name, "delete")
-                  }
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+          errorMessageFunc(person.name, "delete")
+        })
+        .catch(error => {
+          errorMessageFunc(person.name, "deleteWarning")
+        });
+    }
   }
 
-  const Notification = ({message }) => {
+  const Notification = ({ message }) => {
     if (message === null) {
       return null
     }
-    else {
-      if (notificationMessage === "error")
-      {  return (
-          <div className="error">
-            {message}
-          </div>)}
-      else if (notificationMessage === "info") {
-        return (
-          <div className="info">
-            {message}
-          </div>
-      )}   
-      }
+    return (
+      <div className={notificationMessage === "error" ? "error" : "info"}>
+        {message}
+      </div>
+    )
   }
 
-
   const addPerson = (event) => {
-      event.preventDefault()
-      const personObject = {
-        name: newName,
-        number: newNumber,
+    event.preventDefault()
+    const personObject = {
+      name: newName,
+      number: newNumber,
+    }
+    const existingPerson = persons.find(p => p.name.toUpperCase() === personObject.name.toUpperCase())
+    if (existingPerson) {
+      if (window.confirm(`${existingPerson.name} is already added to phonebook, replace old number with new one?`)) {
+        PersonsService
+          .update(existingPerson.id, personObject)
+          .then(response => {
+            setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
+            setNewName('')
+            setNewNumber('')
+            errorMessageFunc(existingPerson.name, "replace")})
+          .catch(error => {
+            errorMessageFunc(existingPerson.name, "deleteWarning")
+          })
       }
-      const sameName = personObject.name.toUpperCase()
-      const ppl = persons.find(p=> p.name === personObject.name)
-      if (persons.map(p => p.name.toUpperCase()).includes(sameName)){ 
-        if (window.confirm(`${ppl.name} is already added to phonebook, replace old number with new one?`)) 
-          {PersonsService
-            .update(ppl.id,personObject)
-            .then(response =>{
-                setPersons(newPersons =>
-                  newPersons.concat(response.data))
-                setNewName('')
-                setNewNumber('')
-            })
-            .catch(error =>
-              {
-                errorMessageFunc(ppl.name,"deleteWarning")
-              }
-            )
-          errorMessageFunc(ppl.name,"replace")}
-        else
-          alert(`${personObject.name} is already added to phonebook`)
-        }
-      else 
-        {PersonsService
-            .create(personObject)
-            .then(response => 
-              {
-              setPersons(prevPersons =>
-                prevPersons.concat(response.data))
-              setNewName('')
-              setNewNumber('')
-              
-            })
-            .catch(error =>
-              {
-              console.log('Error: ', error)
-            })
-
-        errorMessageFunc(personObject.name, "add")}
-      }
+    } else {
+      PersonsService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          errorMessageFunc(personObject.name, "add")
+        })
+        .catch(error => {
+          console.log('Error: ', error)
+        })
+    }
+  }
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -138,5 +119,3 @@ const Phonebook = () => {
 }
 
 export default Phonebook
-
-

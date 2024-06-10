@@ -32,7 +32,8 @@ const App = () => {
   }, [])
   
   useEffect(() => {
-    
+    const updatedPersons = persons
+    setPersonsToShow(updatedPersons)
     setPersonsToShow(
       newFilter === ""
         ? persons
@@ -40,6 +41,7 @@ const App = () => {
             person.name.toUpperCase().includes(newFilter.toUpperCase())
           ))
   }, [persons, newFilter])
+  
 
   return (
     <div>
