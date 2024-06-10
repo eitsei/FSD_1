@@ -25,6 +25,7 @@ const App = () => {
   
   const [personsToShow, setPersonsToShow] = useState([])
 
+  
   useEffect(() => {
     PersonsService.getAll()
                   .then(p => setPersons(p))
@@ -36,7 +37,7 @@ const App = () => {
             person.name.toUpperCase().includes(newFilter.toUpperCase())
           )
     )
-  }, [persons, newFilter])
+  }, [newFilter])
 
   return (
     <div>

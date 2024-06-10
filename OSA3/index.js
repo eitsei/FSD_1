@@ -8,7 +8,10 @@ app.use(morgan('tiny', {
 morgan.token('post', function (req, res) { return req.method === 'POST' ? JSON.stringify(req.body) : '' })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post'))
 const cors = require('cors')
+app.use(express.static('dist'))
 app.use(cors())
+
+
 
 
 let persons = [
