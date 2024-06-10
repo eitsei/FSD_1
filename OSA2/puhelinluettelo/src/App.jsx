@@ -8,9 +8,8 @@ import PersonsService from "./services/PersonsService"
 
 
 const App = () => {
+  const [persons, setPersons] = useState([])
   const {
-    persons,
-    setPersons,
     newName,
     newNumber,
     addPerson,
@@ -21,28 +20,20 @@ const App = () => {
     deletePersons,
     Notification,
     errorMessage
-  } = Phonebook()
+  } = Phonebook(persons, setPersons)
   
-  const [personsToShow, setPersonsToShow] = useState([])
 
   useEffect(() => {
     PersonsService.getAll().then(p => {
-      setPersons(p)
-      setPersonsToShow(p)})
-  }, [])
-  
-  useEffect(() => {
-    const updatedPersons = persons
-    setPersonsToShow(updatedPersons)
-    setPersonsToShow(
-      newFilter === ""
-        ? persons
-        : persons.filter(person => 
-            person.name.toUpperCase().includes(newFilter.toUpperCase())
-          ))
-  }, [persons, newFilter])
-  
+      setPersons(p)})
+  }, [persons])
 
+  const PtS = 
+    newFilter === ""
+          ? persons
+          : persons.filter(person => 
+              person.name.toUpperCase().includes(newFilter.toUpperCase()))
+  
   return (
     <div>
       <h2>Phonebook</h2>
@@ -54,10 +45,9 @@ const App = () => {
         newNumber={newNumber}
         addPerson={addPerson}
         handleNameChange={handleNameChange}
-        handleNumberChange={handleNumberChange}
-      />
+        handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} deletePersons={deletePersons} />
+      <Persons persons={PtS} deletePersons={deletePersons} />
     </div>
   )
 }

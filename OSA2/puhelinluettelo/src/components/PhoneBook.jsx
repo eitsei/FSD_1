@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import PersonsService from "../services/PersonsService"
 
-const Phonebook = () => {
-  const [persons, setPersons] = useState([])
+const Phonebook = (persons,setPersons) => {
+  
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState("")
@@ -103,8 +103,7 @@ const Phonebook = () => {
   }
 
   return {
-    persons,
-    setPersons,
+    
     newName,
     newNumber,
     addPerson,
