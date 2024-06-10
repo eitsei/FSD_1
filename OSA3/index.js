@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 var morgan = require('morgan')
 const app = express()
@@ -9,6 +10,7 @@ const cors = require('cors')
 app.use(express.static('dist'))
 app.use(cors())
 
+const Person = require('./models/person')
 
 
 
@@ -46,17 +48,15 @@ app.get('/', (request, response) => {
     })
 
 app.get('/api/persons', (request, response) => {
-        response.json(persons)
+        Person.find({}).then(persons => {
+            response.json(persons)
+        })
         })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(p => Number(p.id) === id)
-    if (person) {
-        response.json(person)
-        } else {
-        response.status(404).end()
-        }
+    Person.findById(request.params.id).then(p => {
+        response.json(p)
+    })
     })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -97,15 +97,14 @@ app.post('/api/persons', (request, response) => {
         error: 'Number must be unique!' 
         })
 
-    const person = {
+    const person = new Person({
         name: body.name,
-        number: body.number,
-        id: generateId(),
-    }
+        number: body.number
+    })
 
-    persons = persons.concat(person)
-    response.json(person)
-
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
     })    
 
     const PORT = process.env.PORT || 3003
