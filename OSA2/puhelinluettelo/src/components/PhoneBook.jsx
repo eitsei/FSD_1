@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import PersonsService from "../services/PersonsService"
 
-const usePhonebook = () => {
+const Phonebook = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState("")
   const [errorMessage, setErrorMessage] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState("info")
-
 
 
   const errorMessageFunc = (person, service) => {
@@ -138,6 +137,6 @@ const usePhonebook = () => {
   }
 }
 
-export default usePhonebook
+export default Phonebook
 
 

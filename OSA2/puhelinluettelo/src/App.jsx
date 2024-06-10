@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import usePhonebook from "./components/PhoneBook"
+import Phonebook from "./components/PhoneBook"
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
@@ -21,23 +21,25 @@ const App = () => {
     deletePersons,
     Notification,
     errorMessage
-  } = usePhonebook()
+  } = Phonebook()
   
   const [personsToShow, setPersonsToShow] = useState([])
 
+  useEffect(() => {
+    PersonsService.getAll().then(p => {
+      setPersons(p)
+      setPersonsToShow(p)})
+  }, [])
   
   useEffect(() => {
-    PersonsService.getAll()
-                  .then(p => setPersons(p))
-
+    
     setPersonsToShow(
       newFilter === ""
         ? persons
         : persons.filter(person => 
             person.name.toUpperCase().includes(newFilter.toUpperCase())
-          )
-    )
-  }, [newFilter])
+          ))
+  }, [persons, newFilter])
 
   return (
     <div>
