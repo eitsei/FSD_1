@@ -9,6 +9,7 @@ app.use(express.json())
 app.use(express.static('dist'))
 app.use(cors())
 
+
 morgan.token('post', (req, res) => (req.method === 'POST' ? JSON.stringify(req.body) : ''))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post'))
 
@@ -96,6 +97,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
     Person.findByIdAndUpdate(request.params.id, person, {new:true})
         .then(updatedPerson => {
+            console.log(updatedPerson)
             response.json(updatedPerson)
         })
         .catch(error => next(error))

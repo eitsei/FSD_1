@@ -26,7 +26,7 @@ const App = () => {
   useEffect(() => {
     PersonsService.getAll().then(p => {
       setPersons(p)})
-  }, [persons])
+  }, [])
 
   const PtS = 
     newFilter === ""
