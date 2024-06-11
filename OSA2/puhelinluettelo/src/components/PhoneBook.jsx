@@ -68,15 +68,10 @@ const Phonebook = (persons,setPersons) => {
     const existingPerson = persons.find(p => p.name.toUpperCase() === personObject.name.toUpperCase())
     if (existingPerson) {
       if (window.confirm(`${existingPerson.name} is already added to phonebook, replace old number with new one?`)) {
-        console.log('Existing person:',existingPerson)
         const replacingPerson={...existingPerson, number:newNumber}
-        console.log('replacingPerson', replacingPerson)
-        console.log('Id match? ', existingPerson.id === replacingPerson.id)
         PersonsService
           .update(existingPerson.id, replacingPerson)
-          .then(response => {
-            console.log('1')
-            console.log('Stringify JSON', JSON.stringify(response))     
+          .then(response => { 
             setPersons(persons.map(p => p.id !== existingPerson.id ? p : response))
             setNewName('')
             setNewNumber('')
@@ -84,7 +79,6 @@ const Phonebook = (persons,setPersons) => {
           .catch(error => {
             errorMessageFunc(existingPerson.name, "deleteWarning")
           })
-          console.log('2')
       }
       
       
