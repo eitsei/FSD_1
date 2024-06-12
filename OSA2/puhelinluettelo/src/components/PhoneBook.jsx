@@ -9,7 +9,7 @@ const Phonebook = (persons,setPersons) => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState("info")
 
-  const errorMessageFunc = (person, service) => {
+  const errorMessageFunc = (person = "Unknown person", service, err) => {
     if (service ==="delete"){
       setNotificationMessage("info")
       setErrorMessage(`You have removed ${person}`)
@@ -25,6 +25,10 @@ const Phonebook = (persons,setPersons) => {
     else if (service === "deleteWarning") {
       setNotificationMessage("error")
       setErrorMessage(`Information of ${person} has already been removed from server`)
+    }
+    else if (service === "validationWarning") {
+      setNotificationMessage("error")
+      setErrorMessage(`${err}`)
     }
 
     setTimeout(() => {
@@ -92,7 +96,8 @@ const Phonebook = (persons,setPersons) => {
           errorMessageFunc(personObject.name, "add")
         })
         .catch(error => {
-          console.log('Error: ', error)
+          errorMessageFunc(undefined, "validationWarning", error.response.data.error)
+          console.log('Error: ', error.response.data.error)
         })
     }
   }
