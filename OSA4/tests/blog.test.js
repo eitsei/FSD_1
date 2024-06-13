@@ -1,5 +1,6 @@
-const { test, beforeEach, describe } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
+const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
@@ -152,3 +153,6 @@ describe('when there is initially some blogs saved', () => {
     })
   })
 })
+after(async () => {
+    await mongoose.connection.close()
+  })
