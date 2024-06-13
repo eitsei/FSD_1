@@ -13,7 +13,7 @@ blogSchema.set('toJSON', {
       delete returnedObject.__v
     }
   })
-console.log("testi")
+
 const Blog = mongoose.model('Blog', blogSchema)
 
 module.exports = Blog
