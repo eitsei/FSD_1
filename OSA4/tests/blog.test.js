@@ -130,6 +130,26 @@ describe('when there is initially some blogs saved', () => {
       const blogs = blogsAtEnd.map(blog => blog.title)
       assert(!blogs.includes(`${blogToDelete.title}`))
     })
+    test('Adding one like to a blog, amount should be +1', async () => {
+        const blogs = await helper.blogsInDb()
+        const blogToModifyi = blogs[0]
+  
+        const modifyidBlog = {
+          title: blogToModifyi.title,
+          author: blogToModifyi.author,
+          url:    blogToModifyi.url,
+          likes:  blogToModifyi.likes + 1
+        }
+  
+        await api
+          .put(`/api/blogs/${blogToModifyi.id}`)
+          .send(modifyidBlog)
+          .expect(200)
+  
+        const blogsAtEnd = await helper.blogsInDb()
+        assert.notDeepStrictEqual(blogToModifyi.likes,blogsAtEnd[0].likes)
+        assert.deepStrictEqual(blogsAtEnd[0].likes, blogToModifyi.likes + 1)
+      })
 
     test('Likes of modified blog should be 100 and it should not match original likes', async () => {
       const blogs = await helper.blogsInDb()
