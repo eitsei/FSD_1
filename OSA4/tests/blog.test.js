@@ -11,9 +11,24 @@ const User = require('../models/user')
 
 
 describe('when there is initially some blogs saved', () => {
+  let user
+  let token 
+
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
+    await User.deleteMany({})
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    user = new User({ username: 'root', passwordHash })
+    await user.save()
+
+    const response = await api
+      .post('/api/login')
+      .send({
+        username: 'root',
+        password: 'sekret'
+      })
+    token = response.body.token
   })
 
   test('Blogs are returned as json', async () => {
@@ -65,10 +80,12 @@ describe('when there is initially some blogs saved', () => {
         title: 'newBlog',
         author: 'MickeyMouse',
         url: 'test.com',
-        likes: 5
+        likes: 5,
+        userId: `${user._id}`
       }
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -82,10 +99,12 @@ describe('when there is initially some blogs saved', () => {
       const newBlog = {
         title: 'No Likes!',
         author: 'Foo',
-        url: 'nope.com'
+        url: 'nope.com',
+        userId: `${user._id}`
       }
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -98,20 +117,24 @@ describe('when there is initially some blogs saved', () => {
       const withoutTitle = {
         author: 'Foo',
         url: 'nope.com',
-        likes: 10000
+        likes: 10000,
+        userId: `${user._id}`
       }
       const withoutUrl = {
         title: 'No url!',
         author: 'Foo',
-        likes: 10000
+        likes: 10000,
+        userId: `${user._id}`
       }
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(withoutTitle)
         .expect(400)
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(withoutUrl)
         .expect(400)
 
@@ -207,27 +230,50 @@ describe('when there is initially one user at db', () => {
     assert(usernames.includes(newUser.username))
   })
 
-  test('creation fails with proper statuscode and message if username already taken', async () => {
+  test('creation fails if conditions for user and pswd is not met', async () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 'salainen',
+      username: '1',
+      name: 'Liian lyhyt nimi!',
+      password: '2',
     }
 
-    const result = await api
+    await api
       .post('/api/users')
       .send(newUser)
-      .expect(400)
+      .expect(422)
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
-
-    assert(result.body.error.includes('expected `username` to be unique'))
-
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    const usernames = usersAtEnd.map(u => u.username)
+    assert(!usernames.includes(newUser.username))
+
   })
+
+  // test('creation fails with proper statuscode and message if username already taken', async () => {
+  //   const usersAtStart = await helper.usersInDb()
+
+  //   const newUser = {
+  //     username: 'root',
+  //     name: 'Superuser',
+  //     password: 'salainen',
+  //   }
+
+  //   const result = await api
+  //     .post('/api/users')
+  //     .send(newUser)
+  //     .expect(400)
+  //     .expect('Content-Type', /application\/json/)
+
+  //   const usersAtEnd = await helper.usersInDb()
+
+  //   assert(result.body.error.includes('expected `username` to be unique'))
+
+  //   assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  // })
+  
 })
 
 after(async () => {

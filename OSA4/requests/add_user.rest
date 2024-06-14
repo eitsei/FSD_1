@@ -1,9 +1,10 @@
-POST http://localhost:3003/api/users/
+POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-
+Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2NjZjNzBmNDljNjAyNDE1MDM3YWM1ZDMiLCJpYXQiOjE3MTgzODMzNzF9.yIcMOAbqsvZtZtEsOaJu0XrgiQ6bz2fZ59eurfTAYXk"
 {
-    "title":"asd",
-    "authpr": "Jee",
-    "url":"lol",
-    "likes": 1
+    "title":"jeejee",
+    "author": "lol",
+    "url":"jeps",
+    "likes": 1,
+    "userId": "666c6c438a27c82827a5a93b"
 }
