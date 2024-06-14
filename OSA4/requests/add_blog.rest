@@ -1,9 +1,9 @@
-POST http://localhost:3003/api/blogs/
+POST http://localhost:3003/api/users/
 Content-Type: application/json
 
-{
-    "title":"asd",
-    "authpr": "Jee",
-    "url":"lol",
-    "likes": 1
-}
+ {
+      "username": "root",
+      "name": "Superuser",
+      "password": "salainen",
+      "blogs": []
+ }
