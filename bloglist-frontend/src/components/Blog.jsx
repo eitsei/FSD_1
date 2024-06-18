@@ -1,6 +1,7 @@
-const Blog = ({ blog }) => (
+const Blog = ({ blog, removeBlog }) => (
   <div>
-    {blog.title} by {blog.author}, {blog.likes} likes
+    {blog.title} by {blog.author}, {blog.likes} likes 
+    <button onClick={() => removeBlog(blog.id)}>Remove</button>
   </div>  
 )
 

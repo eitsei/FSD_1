@@ -16,10 +16,19 @@ const create = async newObject => {
   const config = {
     headers: { Authorization: token },
   }
-  //console.log('new object: ',newObject)
   const response = await axios.post(baseUrl, newObject, config)
-  //console.log('Blogs response: ',response)
   return response.data
+}
+
+const remove = async (id) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  try {
+    await axios.delete(`${baseUrl}/${id}`, config)
+  } catch (error) {
+    console.error('Error deleting the blog:', error.response ? error.response.data : error.message)
+  }
 }
 
 const update = (id, newObject) => {
@@ -28,4 +37,4 @@ const update = (id, newObject) => {
 }
 
 
-export default { getAll, create, update, setToken }
+export default { getAll, create, remove, update, setToken }

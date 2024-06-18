@@ -17,6 +17,9 @@ const BlogApp = ({setErrorMessage, notificationMessage, setNotificationMessage }
     } else if (service === "error") {
         setNotificationMessage("error")
         setErrorMessage(`${err}`)
+    } else if (service === "remove") {
+        setNotificationMessage("info")
+        setErrorMessage(`You have removed a blog '${blog.title}' by ${blog.author}`)
       }
 
     setTimeout(() => {

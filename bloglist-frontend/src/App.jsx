@@ -6,6 +6,7 @@ import loginService from './services/login'
 import BlogApp from './components/BlogAppService'
 
 
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '', likes: 0 })
@@ -31,7 +32,6 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      console.log("User: ", user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -48,10 +48,9 @@ const App = () => {
     try {
       
       const response = await blogService.create(blogObject)
-      //console.log("response: ", response)
+
       setBlogs((prevBlogs) => {
         const newBlogs = [...prevBlogs, response]
-        //console.log("Updated blogs1:", newBlogs)
         return newBlogs
       })
       errorMessageFunc(user, response,"add",null)
@@ -86,6 +85,19 @@ const App = () => {
     }
   }
 
+  const handleRemoveBlog = async (blog) => {
+    try {
+      await blogService.remove(blog.id)
+      setBlogs((prevBlogs) => {
+        const newBlogs = prevBlogs.filter(b => b.id !== blog.id)
+        return newBlogs
+      })
+      errorMessageFunc(null, blog,"remove",null)
+    }
+    catch(error) {
+      errorMessageFunc(null,null,"error",error)
+    }
+  }
   const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
@@ -93,8 +105,7 @@ const App = () => {
     setUser(null)
   }
   
-  const b = blogs//.filter(blog => blog.user && blog.user.username === user.username)
-  //console.log("b: ", b)
+  const b = user === null ? [] : blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id)
   return (
     <div>
       <h1>blogs</h1>
@@ -103,9 +114,11 @@ const App = () => {
       {user && <div>
         <p>{user.name} logged in <button type='button' onClick={handleLogout}>logout</button> </p>
         <BlogForm addBlog={addBlog} newBlog={newBlog} handleBlogChange={handleBlogChange} />
-        {b.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+        {
+          b.length === 0 ? <p> No blogs added. Maybe add a new blog?</p> :
+        b.map(blog =>
+        <Blog key={blog.id} blog={blog} removeBlog={() => handleRemoveBlog(blog)} />)
+      }
       </div>}
     </div>
   )
