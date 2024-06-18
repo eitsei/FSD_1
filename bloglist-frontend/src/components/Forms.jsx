@@ -25,13 +25,15 @@ const LoginForm = ({ handleLogin, username, password, setUsername, setPassword }
 )
 
 const BlogForm = ({ addBlog, newBlog, handleBlogChange }) => (
-  <form onSubmit={addBlog}>
-    <input
-      value={newBlog}
-      onChange={handleBlogChange}
-    />
-    <button type="submit">save</button>
-  </form>
+  <div>
+    <h2>Add new blog</h2>
+    <form onSubmit={addBlog}>
+      <div> title: <input name="title" value={newBlog.title} onChange={handleBlogChange} /></div>
+      <div> author: <input name="author" value={newBlog.author} onChange={handleBlogChange} /></div>
+      <div> url: <input name="url" value={newBlog.url} onChange={handleBlogChange} /></div>
+      <button type="submit">save</button>
+    </form>
+  </div>
 )
 
 export { LoginForm, BlogForm }

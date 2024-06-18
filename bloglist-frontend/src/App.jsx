@@ -3,19 +3,27 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import {LoginForm, BlogForm} from './components/Forms'
 import loginService from './services/login'
+import BlogApp from './components/BlogAppService'
 
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlog, setNewBlog] = useState('')
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '', likes: 0 })
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState("info")
+
+  const { errorMessageFunc, Notification } = BlogApp({
+    setErrorMessage,
+    notificationMessage,
+    setNotificationMessage
+  })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs( blogs ))  
   }, [])
 
   useEffect(() => {
@@ -23,11 +31,12 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      console.log("User: ", user)
       blogService.setToken(user.token)
     }
   }, [])
 
-  const addBlog =  (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
     const blogObject = {
       title: newBlog.title,
@@ -36,16 +45,25 @@ const App = () => {
       likes: newBlog.likes,
       user: user.id
     }
-    blogService.create(blogObject)
-               .then(returnedBlog => {
-                setBlogs(blogs.concat(returnedBlog))
-                setNewBlog("")
-               })
-              
+    try {
+      
+      const response = await blogService.create(blogObject)
+      //console.log("response: ", response)
+      setBlogs((prevBlogs) => {
+        const newBlogs = [...prevBlogs, response]
+        //console.log("Updated blogs1:", newBlogs)
+        return newBlogs
+      })
+      errorMessageFunc(user, response,"add",null)
+      setNewBlog({ title: '', author: '', url: '', likes: 0 })
+    } catch (error) {
+      errorMessageFunc(null, null,"error",error)
+    }          
   }
-  const handleBlogChange = async (event) => {
-    event.preventDefault()
-    setNewBlog(event.target.value)
+
+  const handleBlogChange = (event) => {
+    const { name, value } = event.target
+    setNewBlog(prevBlog => ({ ...prevBlog, [name]: value }))
   }
 
   const handleLogin = async (event) => {
@@ -60,28 +78,37 @@ const App = () => {
       ) 
       blogService.setToken(user.token)
       setUser(user)
+      errorMessageFunc(user,null,"login",null)
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      errorMessageFunc(user,null,"credentials",'Wrong credentials!')
     }
   }
 
+  const handleLogout = (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedBlogappUser')
+    errorMessageFunc(user,null,"logout",null)
+    setUser(null)
+  }
+  
+  const b = blogs//.filter(blog => blog.user && blog.user.username === user.username)
+  //console.log("b: ", b)
   return (
     <div>
-      <h2>blogs</h2>
+      <h1>blogs</h1>
+      <Notification message = {errorMessage}/>
       {!user && <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />}
       {user && <div>
-        <p>{user.name} logged in</p>
-        {blogs.map(blog =>
+        <p>{user.name} logged in <button type='button' onClick={handleLogout}>logout</button> </p>
+        <BlogForm addBlog={addBlog} newBlog={newBlog} handleBlogChange={handleBlogChange} />
+        {b.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
       </div>}
     </div>
   )
 }
-//        <BlogForm addBlog={addBlog} newBlog={newBlog} handleBlogChange={handleBlogChange} />
+//        
 export default App
