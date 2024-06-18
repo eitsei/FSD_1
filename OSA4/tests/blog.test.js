@@ -12,14 +12,16 @@ const User = require('../models/user')
 
 describe('when there is initially some blogs saved', () => {
   let user
+
   let token
+
 
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
     await User.deleteMany({})
     const passwordHash = await bcrypt.hash('sekret', 10)
-    user = new User({ username: 'root', passwordHash })
+    user  = new User({ username: 'root', passwordHash })
     await user.save()
 
     const response = await api
@@ -28,7 +30,9 @@ describe('when there is initially some blogs saved', () => {
         username: 'root',
         password: 'sekret'
       })
-    token = response.body.token
+
+    token  = response .body.token
+
   })
 
   test('Blogs are returned as json', async () => {
@@ -169,6 +173,44 @@ describe('when there is initially some blogs saved', () => {
       const blogs = blogsAtEnd.map(blog => blog.title)
       assert(!blogs.includes(`${blogToDelete.title}`))
     })
+
+    test('Deleting should not be possible with wrong token', async () => {
+      const newBlog = {
+        title: 'newBlog',
+        author: 'MickeyMouse',
+        url: 'test.com',
+        likes: 5,
+        userId: `${user._id}`
+      }
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[blogsAtStart.length - 1]
+
+      const passwordHash = await bcrypt.hash('sekret', 10)
+      const user2  = new User({ username: 'notroot', passwordHash })
+      await user2.save()
+      const response2 = await api
+        .post('/api/login')
+        .send({
+          username: 'notroot',
+          password: 'sekret'
+        })
+      const token2  = response2 .body.token
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token2}`)
+        .expect(401)
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.deepStrictEqual(blogsAtStart.length, blogsAtEnd.length)
+    })
+
     test('Adding one like to a blog, amount should be +1', async () => {
       const newBlog = {
         title: 'testBlog',
@@ -309,12 +351,11 @@ describe('when there is initially one user at db', () => {
     const result = await api
       .post('/api/users')
       .send(newUser)
-      .expect(400)
+      .expect(409)
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
-
-    assert(result.body.error.includes('expected `username` to be unique'))
+    assert(result.body.error.includes('Username already exists'))
 
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })

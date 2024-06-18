@@ -80,7 +80,7 @@ blogsRouter.put('/:id', async (request, response) => {
       await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
       response.status(200).json({ message:`You have modified blog with id: ${request.params.id}` }).end()
     } else {
-      response.status(401).json({ error: 'only the added can modifyi this blog' })
+      response.status(401).json({ error: 'only the adder can modifyi this blog' })
     }
   }
   catch {
