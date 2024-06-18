@@ -12,9 +12,7 @@ const User = require('../models/user')
 
 describe('when there is initially some blogs saved', () => {
   let user
-
   let token
-
 
   beforeEach(async () => {
     await Blog.deleteMany({})
@@ -99,6 +97,27 @@ describe('when there is initially some blogs saved', () => {
       const blogs = blogsAtEnd.map(blog => blog.title)
       assert(blogs.includes('newBlog'))
     })
+
+    test('Blog should not be added if token is missing', async() => {
+      const blogsAtStart = await helper.blogsInDb()
+      const newBlog = {
+        title: 'newBlog',
+        author: 'MickeyMouse',
+        url: 'test.com',
+        likes: 5,
+        userId: `${user._id}`
+      }
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.deepStrictEqual(blogsAtStart.length, blogsAtEnd.length)
+
+    })
+
     test('Amount of likes should be 0 if likes are not included', async () => {
       const newBlog = {
         title: 'No Likes!',

@@ -22,22 +22,25 @@ blogsRouter.get('/:id', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
-  const user = await User.findById(request.user.id)
+  try {
+    const user = await User.findById(request.user.id)
+    if(!body.title || !body.url) {
+      response.status(400).json({ error: 'Title or url missing!' }).end()
+    } else{
+      const blog = new Blog({
+        title:  body.title,
+        author: body.author,
+        url:    body.url,
+        likes:  !body.likes ? 0 : body.likes,
+        user:   user._id
+      })
 
-  if(!body.title || !body.url) {
-    response.status(400).json({ error: 'Title or url missing!' }).end()
-  } else{
-    const blog = new Blog({
-      title:  body.title,
-      author: body.author,
-      url:    body.url,
-      likes:  !body.likes ? 0 : body.likes,
-      user:   user._id
-    })
-
-    const savedBlog = await blog.save()
-    await user.save()
-    response.status(201).json(savedBlog)}
+      const savedBlog = await blog.save()
+      await user.save()
+      response.status(201).json(savedBlog)}}
+  catch {
+    response.status(401).json({ error: 'Cannot get user!' })
+  }
 
 })
 
