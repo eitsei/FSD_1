@@ -41,19 +41,7 @@ const BlogForm = ({user, createBlog }) =>{
       user: user.id
     })
     setNewBlog({ title: '', author: '', url: '', likes: 0 })
-    // try {
-      
-    //   const response = await blogService.create(blogObject)
-
-    //   setBlogs((prevBlogs) => {
-    //     const newBlogs = [...prevBlogs, response]
-    //     return newBlogs
-    //   })
-    //   errorMessageFunc(user, response,"add",null)
-    //   setNewBlog({ title: '', author: '', url: '', likes: 0 })
-    // } catch (error) {
-    //   errorMessageFunc(null, null,"error",error)
-    // }          
+       
   }
     const handleBlogChange = (event) => {
     const { name, value } = event.target

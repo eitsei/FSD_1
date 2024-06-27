@@ -10,7 +10,6 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '', likes: 0 })
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
@@ -38,34 +37,6 @@ const App = () => {
     }
   }, [])
 
-  // const addBlog = async (event) => {
-  //   event.preventDefault()
-  //   const blogObject = {
-  //     title: newBlog.title,
-  //     author: newBlog.author,
-  //     url: newBlog.url,
-  //     likes: newBlog.likes,
-  //     user: user.id
-  //   }
-  //   try {
-      
-  //     const response = await blogService.create(blogObject)
-
-  //     setBlogs((prevBlogs) => {
-  //       const newBlogs = [...prevBlogs, response]
-  //       return newBlogs
-  //     })
-  //     errorMessageFunc(user, response,"add",null)
-  //     setNewBlog({ title: '', author: '', url: '', likes: 0 })
-  //   } catch (error) {
-  //     errorMessageFunc(null, null,"error",error)
-  //   }          
-  // }
-
-  // const handleBlogChange = (event) => {
-  //   const { name, value } = event.target
-  //   setNewBlog(prevBlog => ({ ...prevBlog, [name]: value }))
-  // }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -97,7 +68,11 @@ const App = () => {
       errorMessageFunc(null, blog,"remove",null)
     }
     catch(error) {
-      errorMessageFunc(null,null,"error",error)
+      if (error.response && error.response.status === 401 && error.response.data.error === 'token expired') {
+        errorMessageFunc(null, null, "error", 'Token expired. Please log in again.')
+      } else {
+        errorMessageFunc(null, null, "error", error)
+      }
     }
   }
   const handleLogout = (event) => {
@@ -107,18 +82,8 @@ const App = () => {
     setUser(null)
   }
 
+  const b = user ? blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id) : blogs;
 
-  // <LoginForm
-  //           username={username}
-  //           password={password}
-  //           handleUsernameChange={({ target }) => setUsername(target.value)}
-  //           handlePasswordChange={({ target }) => setPassword(target.value)}
-  //           handleSubmit={handleLogin}
-  //         />
-  // <BlogForm addBlog={addBlog} newBlog={newBlog} handleBlogChange={handleBlogChange} />
-  //<LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
-  const b = user === null ? [] : blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id)
-  //const blogForm = <BlogForm> user = {user} errorMessageFunc = {errorMessageFunc} setBlogs = {setBlogs}</BlogForm>
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
@@ -131,7 +96,11 @@ const App = () => {
   
       errorMessageFunc(user, response, "add", null)
     } catch (error) {
-      errorMessageFunc(null, null, "error", error)
+      if (error.response && error.response.status === 401 && error.response.data.error === 'token expired') {
+        errorMessageFunc(null, null, "error", 'Token expired. Please log in again.')
+      } else {
+        errorMessageFunc(null, null, "error", error)
+      }
     }
   };      
 
@@ -141,9 +110,11 @@ const App = () => {
       <h1>blogs</h1>
       <Notification message = {errorMessage}/>
       {!user && 
+      <div>
         <Togglable buttonLabel='Open login form'>
           <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
-        </Togglable>}
+        </Togglable>
+      </div>}
       {user && <div>
         <p>{user.name} logged in <button type='button' onClick={handleLogout}>logout</button> </p>
         <Togglable buttonLabel = "Add new blog" ref = {blogFormRef}> 
@@ -152,13 +123,14 @@ const App = () => {
             createBlog={addBlog}
           />
         </Togglable>
-        {
+       
+      </div>}
+      {
           b.length === 0 ? <p> No blogs added. Maybe add a new blog?</p> 
           :
             b.map(blog =>
-            <Blog key={blog.id} blog={blog} removeBlog={() => handleRemoveBlog(blog)} />)
+            <Blog key={blog.id} blog={blog} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
       }
-      </div>}
     </div>
   )
 }
