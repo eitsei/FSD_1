@@ -1,30 +1,66 @@
 
+import { useState } from 'react'
 
 const LoginForm = ({ handleLogin, username, password, setUsername, setPassword }) => (
-  <form onSubmit={handleLogin}>
-    <div>
-      username
-      <input
-        type="text"
-        value={username}
-        name="Username"
-        onChange={({ target }) => setUsername(target.value)}
-      />
-    </div>
-    <div>
-      password
-      <input
-        type="password"
-        value={password}
-        name="Password"
-        onChange={({ target }) => setPassword(target.value)}
-      />
-    </div>
-    <button type="submit">login</button>
-  </form>
+  <div>
+    <h2>Login</h2>
+    <form onSubmit={handleLogin}>
+      <div>
+        username
+        <input
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+        />
+      </div>
+      <div>
+        password
+        <input
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+      <button type="submit">login</button>
+    </form>
+  </div>
 )
 
-const BlogForm = ({ addBlog, newBlog, handleBlogChange }) => (
+const BlogForm = ({user, createBlog }) =>{ 
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '', likes: 0 })
+  
+  const addBlog = async (event) => {
+    event.preventDefault()
+    createBlog ({
+      title: newBlog.title,
+      author: newBlog.author,
+      url: newBlog.url,
+      likes: newBlog.likes,
+      user: user.id
+    })
+    setNewBlog({ title: '', author: '', url: '', likes: 0 })
+    // try {
+      
+    //   const response = await blogService.create(blogObject)
+
+    //   setBlogs((prevBlogs) => {
+    //     const newBlogs = [...prevBlogs, response]
+    //     return newBlogs
+    //   })
+    //   errorMessageFunc(user, response,"add",null)
+    //   setNewBlog({ title: '', author: '', url: '', likes: 0 })
+    // } catch (error) {
+    //   errorMessageFunc(null, null,"error",error)
+    // }          
+  }
+    const handleBlogChange = (event) => {
+    const { name, value } = event.target
+    setNewBlog(prevBlog => ({ ...prevBlog, [name]: value }))
+  }
+  
+  return (
   <div>
     <h2>Add new blog</h2>
     <form onSubmit={addBlog}>
@@ -34,6 +70,8 @@ const BlogForm = ({ addBlog, newBlog, handleBlogChange }) => (
       <button type="submit">save</button>
     </form>
   </div>
-)
+  )
+}
+
 
 export { LoginForm, BlogForm }
