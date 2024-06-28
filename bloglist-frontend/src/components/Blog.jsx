@@ -1,4 +1,5 @@
 import { useState} from 'react'
+import blogs from '../services/blogs'
 const Blog = ({ blog, removeBlog, user }) => {
   const [visible, setVisible] = useState(false)
   
@@ -21,15 +22,31 @@ const Blog = ({ blog, removeBlog, user }) => {
         <div>
           Added by: {user.name}
         </div>
-      );
+      )
     } else {
       return (
         <div>
           Added by non-logged in user
         </div>
-      );
+      )
     }
-  };
+  }
+
+  const addLike = async () => {
+    const blogObject = {
+      "user":`${blog.user}`,
+      "likes":blog.likes + 1,
+      "author":`${blog.author}`,
+      "title":`${blog.title}`,
+      "url":`${blog.url}`
+    }
+    try{
+      await blogs.update(blog.id, blogObject)
+    }
+    catch(error) {
+      console.log("Error: ",error)
+    }
+  }
   
   const handleRemove = () => {
     if (window.confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
@@ -50,7 +67,7 @@ const Blog = ({ blog, removeBlog, user }) => {
             url: {blog.url}
           </div>
           <div>
-          likes : {blog.likes} <button>Like!</button>
+          likes : {blog.likes} <button onClick= {addLike}>Like!</button>
           </div>
           {showAdded()}
           {user && <div>

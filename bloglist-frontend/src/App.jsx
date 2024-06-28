@@ -128,7 +128,7 @@ const App = () => {
       {
           b.length === 0 ? <p> No blogs added. Maybe add a new blog?</p> 
           :
-            b.map(blog =>
+            b.sort((a,b) => b.likes - a.likes).map(blog =>
             <Blog key={blog.id} blog={blog} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
       }
     </div>
