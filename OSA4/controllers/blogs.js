@@ -66,6 +66,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
+  console.log("Testi")
   const body = request.body
 
   const user = await User.findById(request.user.id)

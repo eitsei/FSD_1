@@ -31,9 +31,15 @@ const remove = async (id) => {
   }
 }
 
-const update = (id, newObject) => {
-  const request = axios.put(`${ baseUrl } /${id}`, newObject)
-  return request.then(response => response.data)
+const update = async (id, newObject) => {
+  console.log(`${baseUrl}/${id}`)
+  try{
+    console.log("Kutsutaanko?")
+    const request = await axios.put(`${baseUrl}/${id}`, newObject)
+    console.log("Updaten  req: ", request)
+    return request.then(response => response.data)}
+  catch (error)
+  {console.error("Updaten error: ", error)}
 }
 
 

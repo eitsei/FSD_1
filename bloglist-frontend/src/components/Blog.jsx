@@ -31,17 +31,26 @@ const Blog = ({ blog, removeBlog, user }) => {
       )
     }
   }
-
+  // const blogObject = {
+  //   "user":`${blog.user.id}`,
+  //   "likes":blog.likes + 1,
+  //   "author":`${blog.author}`,
+  //   "title":`${blog.title}`,
+  //   "url":`${blog.url}`
+  // }
   const addLike = async () => {
+    console.log("Add liken user: ",user.id)
     const blogObject = {
-      "user":`${blog.user}`,
-      "likes":blog.likes + 1,
-      "author":`${blog.author}`,
-      "title":`${blog.title}`,
-      "url":`${blog.url}`
+      user: user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
     }
+    console.log("Blog object: ",blogObject)
     try{
-      await blogs.update(blog.id, blogObject)
+      const updatedBlog = await blogs.update(blog.id, blogObject)
+      console.log("Updated blog: ", updatedBlog)
     }
     catch(error) {
       console.log("Error: ",error)
