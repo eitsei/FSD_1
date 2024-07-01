@@ -32,15 +32,18 @@ const remove = async (id) => {
 }
 
 const update = async (id, newObject) => {
-  console.log(`${baseUrl}/${id}`)
-  try{
-    console.log("Kutsutaanko?")
-    const request = await axios.put(`${baseUrl}/${id}`, newObject)
-    console.log("Updaten  req: ", request)
-    return request.then(response => response.data)}
+  //console.log(`${baseUrl}/${id}`)
+  try
+  {
+    // const request = axios.put(`${baseUrl}/${id}`, newObject)
+    // console.log("Requestin response data: ",request.then(response => response.data))
+    // return request.then(response => response.data)
+    await axios.put(`${baseUrl}/${id}`, newObject)
+  }
   catch (error)
-  {console.error("Updaten error: ", error)}
-}
+  {
+    console.log("Updaten error: ", error)}
+} 
 
 
 export default { getAll, create, remove, update, setToken }

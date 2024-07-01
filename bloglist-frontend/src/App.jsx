@@ -25,7 +25,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs ))  
+      setBlogs(blogs))  
   }, [])
 
   useEffect(() => {
@@ -87,12 +87,12 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      const response = await blogService.create(blogObject);
+      const response = await blogService.create(blogObject)
   
       setBlogs((prevBlogs) => {
-        const newBlogs = [...prevBlogs, response];
-        return newBlogs;
-      });
+        const newBlogs = [...prevBlogs, response]
+        return newBlogs
+      })
   
       errorMessageFunc(user, response, "add", null)
     } catch (error) {
@@ -102,7 +102,22 @@ const App = () => {
         errorMessageFunc(null, null, "error", error)
       }
     }
-  };      
+  }      
+  const handleLike = async (id) => {
+    const blog = blogs.find(b => b.id === id)
+    const blogObject = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id 
+    }
+  
+    try {
+      const updatedBlog = await blogService.update(id, blogObject)
+      setBlogs(blogs.map(b => b.id === id ? updatedBlog : b))
+    } catch (error) {
+      console.log("Error: ", error)
+    }
+  }
 
   const blogFormRef = useRef()
   return (
@@ -129,7 +144,7 @@ const App = () => {
           b.length === 0 ? <p> No blogs added. Maybe add a new blog?</p> 
           :
             b.sort((a,b) => b.likes - a.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
       }
     </div>
   )

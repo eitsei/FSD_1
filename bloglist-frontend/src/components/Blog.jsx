@@ -1,6 +1,6 @@
 import { useState} from 'react'
-import blogs from '../services/blogs'
-const Blog = ({ blog, removeBlog, user }) => {
+//import blogs from '../services/blogs'
+const Blog = ({ blog, removeBlog, user, handleLike }) => {
   const [visible, setVisible] = useState(false)
   
 
@@ -38,24 +38,24 @@ const Blog = ({ blog, removeBlog, user }) => {
   //   "title":`${blog.title}`,
   //   "url":`${blog.url}`
   // }
-  const addLike = async () => {
-    console.log("Add liken user: ",user.id)
-    const blogObject = {
-      user: user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }
-    console.log("Blog object: ",blogObject)
-    try{
-      const updatedBlog = await blogs.update(blog.id, blogObject)
-      console.log("Updated blog: ", updatedBlog)
-    }
-    catch(error) {
-      console.log("Error: ",error)
-    }
-  }
+  // const addLike = async () => {
+  //   const blogObject = {
+  //     user: user.id,
+  //     likes: blog.likes + 1,
+  //     author: blog.author,
+  //     title: blog.title,
+  //     url: blog.url
+  //   }
+  //   try
+  //   {
+  //     const updatedBlog = await blogs.update(blog.id, blogObject)
+  //     handleLike(updatedBlog)
+  //     console.log("Blog.jsx updated blog: ", updatedBlog)
+  //   }
+  //   catch(error) {
+  //     console.log("Error: ",error)
+  //   }
+  // }
   
   const handleRemove = () => {
     if (window.confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
@@ -76,7 +76,7 @@ const Blog = ({ blog, removeBlog, user }) => {
             url: {blog.url}
           </div>
           <div>
-          likes : {blog.likes} <button onClick= {addLike}>Like!</button>
+          likes : {blog.likes} <button onClick={() => handleLike(blog.id)}>Like!</button>
           </div>
           {showAdded()}
           {user && <div>
