@@ -82,7 +82,10 @@ const App = () => {
     setUser(null)
   }
 
-  const b = user ? blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id) : blogs;
+  const b = user ? 
+  blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id)
+  : 
+  blogs
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -110,10 +113,12 @@ const App = () => {
       likes: blog.likes + 1,
       user: blog.user.id 
     }
-  
     try {
       const updatedBlog = await blogService.update(id, blogObject)
-      setBlogs(blogs.map(b => b.id === id ? updatedBlog : b))
+      console.log("Updated blog: ", updatedBlog)
+      const updatedBlogs = blogs.map(b => b.id === id ? updatedBlog : b)
+      console.log("Updated blogs: ", updatedBlogs)
+      setBlogs(updatedBlogs)
     } catch (error) {
       console.log("Error: ", error)
     }
@@ -144,7 +149,7 @@ const App = () => {
           b.length === 0 ? <p> No blogs added. Maybe add a new blog?</p> 
           :
             b.sort((a,b) => b.likes - a.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} handleLike={handleLike} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
+            <Blog key={blog.id} blog={blog} handleLike={() => handleLike(blog.id)} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
       }
     </div>
   )
