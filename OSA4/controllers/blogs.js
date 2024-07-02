@@ -23,7 +23,7 @@ blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
   try {
-    const user = await User.findById(request.body.user.id)
+    const user = await User.findById(request.user.id)
     if(!body.title || !body.url) {
       response.status(400).json({ error: 'Title or url missing!' }).end()
     } else{
@@ -46,7 +46,7 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
 
-  const user = await User.findById(request.body.user.id)
+  const user = await User.findById(request.user.id)
   try{
     const blogToDelete = await Blog.findById(request.params.id)
     if (!blogToDelete){
@@ -71,7 +71,8 @@ blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
 
   //const user = await User.findById(request.user.id)
-  const user = await User.findById(request.body.user.id)
+  const userId = body.user.id ? body.user.id : body.user
+  const user = await User.findById(userId)
   try {
     const blogToModify = await Blog.findById(request.params.id)
     if (!blogToModify) {
@@ -83,8 +84,8 @@ blogsRouter.put('/:id', async (request, response) => {
         url:    body.url,
         likes:  body.likes
       }
-      await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-      response.status(200).json({ message:`You have modified blog with id: ${request.params.id}` }).end()
+      const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+      response.status(200).json(updatedBlog)
     } else {
       response.status(401).json({ error: 'only the adder can modifyi this blog' })
     }

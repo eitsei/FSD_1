@@ -1,7 +1,6 @@
 const BlogApp = ({ setErrorMessage, notificationMessage, setNotificationMessage }) => {
 
   const errorMessageFunc = (user, blog, service, err) => {
-    //console.log("User: ", user, " blog: ", blog, " Service: ", service, " error: ", err)
     if (service === 'login') {
       setNotificationMessage('info')
       setErrorMessage(`${user.name} has logged in!`)
@@ -20,6 +19,10 @@ const BlogApp = ({ setErrorMessage, notificationMessage, setNotificationMessage 
     } else if (service === 'remove') {
       setNotificationMessage('info')
       setErrorMessage(`You have removed a blog '${blog.title}' by ${blog.author}`)
+    }
+    else if (service === 'like') {
+      setNotificationMessage('info')
+      setErrorMessage(`You have added a like to a blog '${blog.title}' by ${blog.author}`)
     }
 
     setTimeout(() => {

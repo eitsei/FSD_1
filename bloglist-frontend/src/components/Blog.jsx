@@ -1,8 +1,6 @@
 import { useState } from 'react'
-//import blogs from '../services/blogs'
 const Blog = ({ blog, removeBlog, user, handleLike }) => {
   const [visible, setVisible] = useState(false)
-
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -31,38 +29,12 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
       )
     }
   }
-  // const blogObject = {
-  //   "user":`${blog.user.id}`,
-  //   "likes":blog.likes + 1,
-  //   "author":`${blog.author}`,
-  //   "title":`${blog.title}`,
-  //   "url":`${blog.url}`
-  // }
-  // const addLike = async () => {
-  //   const blogObject = {
-  //     user: user.id,
-  //     likes: blog.likes + 1,
-  //     author: blog.author,
-  //     title: blog.title,
-  //     url: blog.url
-  //   }
-  //   try
-  //   {
-  //     const updatedBlog = await blogs.update(blog.id, blogObject)
-  //     handleLike(updatedBlog)
-  //     console.log("Blog.jsx updated blog: ", updatedBlog)
-  //   }
-  //   catch(error) {
-  //     console.log("Error: ",error)
-  //   }
-  // }
-
-  const addLike = async () => {
-    const blogObject = ({
-      ...blog, likes: blog.likes +1
+  const addLike = () => {
+    const likedBlog = ({
+      ...blog,
+      likes: blog.likes + 1
     })
-    console.log('Blog addLike blogObject: ', blogObject)
-    handleLike(blogObject)
+    handleLike(likedBlog)
   }
 
   const handleRemove = () => {

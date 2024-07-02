@@ -81,12 +81,12 @@ const App = () => {
     errorMessageFunc(user,null,'logout',null)
     setUser(null)
   }
-  //console.log('B1: ', blogs.filter(blog => blog && blog.user && (blog.user.id || blog.user) === user.id))
+
   const b = user ?
-    blogs.filter(blog => blog.user?.id === user.id || blog.user === user.id)
+    blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id)
     :
     blogs
-  //console.log('B2: ', blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id))
+
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
@@ -96,6 +96,7 @@ const App = () => {
         const newBlogs = [...prevBlogs, response]
         return newBlogs
       })
+
       errorMessageFunc(user, response, 'add', null)
     } catch (error) {
       if (error.response && error.response.status === 401 && error.response.data.error === 'token expired') {
@@ -105,22 +106,15 @@ const App = () => {
       }
     }
   }
-  const handleLike = async (updateBlogObject) => {
-    // const blog = blogs.find(b => b.id === id)
-    // const blogObject = {
-    //   ...blog,
-    //   likes: blog.likes + 1,
-    //   user: blog.user.id
-    // }
-    console.log('App handleLike updateBlogObject: ', updateBlogObject)
+  const handleLike = async (blogObject) => {
+
     try {
-      const updatedBlog = await blogService.update(updateBlogObject)
-      console.log('Updated blog: ', updatedBlog)
-      const updatedBlogs = blogs.map(b => b.id !== updateBlogObject.id ? b : updatedBlog)
-      console.log('Updated blogs: ', updatedBlogs)
+      const updatedBlog = await blogService.update(blogObject)
+      const updatedBlogs = blogs.map(b => b.id !== blogObject.id ? b : updatedBlog)
       setBlogs(updatedBlogs)
+      errorMessageFunc(null,updatedBlog,'like',null)
     } catch (error) {
-      console.log('Error: ', error)
+      errorMessageFunc(null, null, 'error', error)
     }
   }
 
@@ -149,7 +143,7 @@ const App = () => {
         b.length === 0 ? <p> No blogs added. Maybe add a new blog?</p>
           :
           b.sort((a,b) => b.likes - a.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} handleLike={() => handleLike(blog)} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
+            <Blog key={blog.id} blog={blog} handleLike={handleLike} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
       }
     </div>
   )
