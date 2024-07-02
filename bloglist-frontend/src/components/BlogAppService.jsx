@@ -1,29 +1,32 @@
-const BlogApp = ({setErrorMessage, notificationMessage, setNotificationMessage }) => {
+const BlogApp = ({ setErrorMessage, notificationMessage, setNotificationMessage }) => {
 
   const errorMessageFunc = (user, blog, service, err) => {
-    //console.log("User: ", user, " blog: ", blog, " Service: ", service, " error: ", err)
-    if (service === "login") {
-      setNotificationMessage("info")
+    if (service === 'login') {
+      setNotificationMessage('info')
       setErrorMessage(`${user.name} has logged in!`)
-    } else if (service === "logout") {
-      setNotificationMessage("info")
+    } else if (service === 'logout') {
+      setNotificationMessage('info')
       setErrorMessage(`${user.name} has logged out!`)
-    } else if (service === "add") {
-      setNotificationMessage("info")
+    } else if (service === 'add') {
+      setNotificationMessage('info')
       setErrorMessage(`You have added a blog '${blog.title}' by ${blog.author}`)
-    } else if (service === "credentials") {
-      setNotificationMessage("error")
+    } else if (service === 'credentials') {
+      setNotificationMessage('error')
       setErrorMessage(`${err}`)
-    } else if (service === "error") {
-        setNotificationMessage("error")
-        setErrorMessage(`${err}`)
-    } else if (service === "remove") {
-        setNotificationMessage("info")
-        setErrorMessage(`You have removed a blog '${blog.title}' by ${blog.author}`)
-      }
+    } else if (service === 'error') {
+      setNotificationMessage('error')
+      setErrorMessage(`${err}`)
+    } else if (service === 'remove') {
+      setNotificationMessage('info')
+      setErrorMessage(`You have removed a blog '${blog.title}' by ${blog.author}`)
+    }
+    else if (service === 'like') {
+      setNotificationMessage('info')
+      setErrorMessage(`You have added a like to a blog '${blog.title}' by ${blog.author}`)
+    }
 
     setTimeout(() => {
-      setErrorMessage(null);
+      setErrorMessage(null)
     }, 5000)
   }
 
@@ -32,7 +35,7 @@ const BlogApp = ({setErrorMessage, notificationMessage, setNotificationMessage }
       return null
     }
     return (
-      <div className={notificationMessage === "error" ? "error" : "info"}>
+      <div className={notificationMessage === 'error' ? 'error' : 'info'}>
         {message}
       </div>
     )

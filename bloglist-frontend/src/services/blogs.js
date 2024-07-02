@@ -25,25 +25,26 @@ const remove = async (id) => {
     headers: { Authorization: token },
   }
   try {
-    await axios.delete(`${baseUrl}/${id}`, config)
+    const response = await axios.delete(`${baseUrl}/${id}`, config)
+    return response.data
   } catch (error) {
     console.error('Error deleting the blog:', error.response ? error.response.data : error.message)
   }
 }
 
-const update = async (id, newObject) => {
-  //console.log(`${baseUrl}/${id}`)
+const update = async (newObject) => {
+  const config = {
+    headers: { Authorization: token },
+  }
   try
   {
-    // const request = axios.put(`${baseUrl}/${id}`, newObject)
-    // console.log("Requestin response data: ",request.then(response => response.data))
-    // return request.then(response => response.data)
-    await axios.put(`${baseUrl}/${id}`, newObject)
+    const response = await axios.put(`${baseUrl}/${newObject.id}`, newObject, config)
+    return response.data
   }
   catch (error)
   {
-    console.log("Updaten error: ", error)}
-} 
+    console.log('Updaten error: ', error)}
+}
 
 
 export default { getAll, create, remove, update, setToken }

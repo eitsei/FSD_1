@@ -1,8 +1,6 @@
-import { useState} from 'react'
-//import blogs from '../services/blogs'
+import { useState } from 'react'
 const Blog = ({ blog, removeBlog, user, handleLike }) => {
   const [visible, setVisible] = useState(false)
-  
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -31,41 +29,23 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
       )
     }
   }
-  // const blogObject = {
-  //   "user":`${blog.user.id}`,
-  //   "likes":blog.likes + 1,
-  //   "author":`${blog.author}`,
-  //   "title":`${blog.title}`,
-  //   "url":`${blog.url}`
-  // }
-  // const addLike = async () => {
-  //   const blogObject = {
-  //     user: user.id,
-  //     likes: blog.likes + 1,
-  //     author: blog.author,
-  //     title: blog.title,
-  //     url: blog.url
-  //   }
-  //   try
-  //   {
-  //     const updatedBlog = await blogs.update(blog.id, blogObject)
-  //     handleLike(updatedBlog)
-  //     console.log("Blog.jsx updated blog: ", updatedBlog)
-  //   }
-  //   catch(error) {
-  //     console.log("Error: ",error)
-  //   }
-  // }
-  
+  const addLike = () => {
+    const likedBlog = ({
+      ...blog,
+      likes: blog.likes + 1
+    })
+    handleLike(likedBlog)
+  }
+
   const handleRemove = () => {
     if (window.confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
-      removeBlog(blog.id);
+      removeBlog(blog.id)
     }
   }
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} by {blog.author} 
+        {blog.title} by {blog.author}
         <button onClick={toggleVisibility}>
           {visible ? 'Hide!' : 'View more'}
         </button>
@@ -76,7 +56,7 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
             url: {blog.url}
           </div>
           <div>
-          likes : {blog.likes} <button onClick={() => handleLike(blog.id)}>Like!</button>
+          likes : {blog.likes} <button onClick={addLike}>Like!</button>
           </div>
           {showAdded()}
           {user && <div>
@@ -88,4 +68,4 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
   )
 }
 
-export default Blog;
+export default Blog
