@@ -28,9 +28,9 @@ const LoginForm = ({ handleLogin, username, password, setUsername, setPassword }
   </div>
 )
 
-const BlogForm = ({user, createBlog }) =>{ 
+const BlogForm = ({ user, createBlog }) => {
   const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '', likes: 0 })
-  
+
   const addBlog = async (event) => {
     event.preventDefault()
     createBlog ({
@@ -41,23 +41,23 @@ const BlogForm = ({user, createBlog }) =>{
       user: user.id
     })
     setNewBlog({ title: '', author: '', url: '', likes: 0 })
-       
+
   }
-    const handleBlogChange = (event) => {
+  const handleBlogChange = (event) => {
     const { name, value } = event.target
     setNewBlog(prevBlog => ({ ...prevBlog, [name]: value }))
   }
-  
+
   return (
-  <div>
-    <h2>Add new blog</h2>
-    <form onSubmit={addBlog}>
-      <div> title: <input name="title" value={newBlog.title} onChange={handleBlogChange} /></div>
-      <div> author: <input name="author" value={newBlog.author} onChange={handleBlogChange} /></div>
-      <div> url: <input name="url" value={newBlog.url} onChange={handleBlogChange} /></div>
-      <button type="submit">save</button>
-    </form>
-  </div>
+    <div>
+      <h2>Add new blog</h2>
+      <form onSubmit={addBlog}>
+        <div> title: <input name="title" value={newBlog.title} onChange={handleBlogChange} /></div>
+        <div> author: <input name="author" value={newBlog.author} onChange={handleBlogChange} /></div>
+        <div> url: <input name="url" value={newBlog.url} onChange={handleBlogChange} /></div>
+        <button type="submit">save</button>
+      </form>
+    </div>
   )
 }
 

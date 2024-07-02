@@ -23,7 +23,7 @@ blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
   try {
-    const user = await User.findById(request.user.id)
+    const user = await User.findById(request.body.user.id)
     if(!body.title || !body.url) {
       response.status(400).json({ error: 'Title or url missing!' }).end()
     } else{
@@ -46,7 +46,7 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
 
-  const user = await User.findById(request.user.id)
+  const user = await User.findById(request.body.user.id)
   try{
     const blogToDelete = await Blog.findById(request.params.id)
     if (!blogToDelete){
@@ -71,7 +71,7 @@ blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
 
   //const user = await User.findById(request.user.id)
-  const user = await User.findById(request.body.user)
+  const user = await User.findById(request.body.user.id)
   try {
     const blogToModify = await Blog.findById(request.params.id)
     if (!blogToModify) {

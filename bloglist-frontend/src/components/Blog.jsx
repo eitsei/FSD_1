@@ -1,8 +1,8 @@
-import { useState} from 'react'
+import { useState } from 'react'
 //import blogs from '../services/blogs'
 const Blog = ({ blog, removeBlog, user, handleLike }) => {
   const [visible, setVisible] = useState(false)
-  
+
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -56,16 +56,24 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
   //     console.log("Error: ",error)
   //   }
   // }
-  
+
+  const addLike = async () => {
+    const blogObject = ({
+      ...blog, likes: blog.likes +1
+    })
+    console.log('Blog addLike blogObject: ', blogObject)
+    handleLike(blogObject)
+  }
+
   const handleRemove = () => {
     if (window.confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
-      removeBlog(blog.id);
+      removeBlog(blog.id)
     }
   }
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} by {blog.author} 
+        {blog.title} by {blog.author}
         <button onClick={toggleVisibility}>
           {visible ? 'Hide!' : 'View more'}
         </button>
@@ -76,7 +84,7 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
             url: {blog.url}
           </div>
           <div>
-          likes : {blog.likes} <button onClick={() => handleLike(blog.id)}>Like!</button>
+          likes : {blog.likes} <button onClick={addLike}>Like!</button>
           </div>
           {showAdded()}
           {user && <div>
@@ -88,4 +96,4 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
   )
 }
 
-export default Blog;
+export default Blog
