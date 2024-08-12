@@ -82,7 +82,8 @@ const App = () => {
     setUser(null)
   }
 
-  const b = user ?
+  const b = user
+    ?
     blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id)
     :
     blogs

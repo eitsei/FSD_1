@@ -76,11 +76,11 @@ describe('<Blog />', () => {
 
     expect(createBlog).toHaveBeenCalledTimes(1)
     expect(createBlog).toHaveBeenCalledWith({
-        title: 'TESTI',
-        author: 'KIRJOITTAJA',
-        url: 'TESTI.FI',
-        likes:0,
-        user:'123'
+      title: 'TESTI',
+      author: 'KIRJOITTAJA',
+      url: 'TESTI.FI',
+      likes:0,
+      user:'123'
     })
 
   })

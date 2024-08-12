@@ -10,6 +10,7 @@ const LoginForm = ({ handleLogin, username, password, setUsername, setPassword }
         <div>
           username
           <input
+            data-testid='username'
             type="text"
             value={username}
             name="Username"
@@ -19,6 +20,7 @@ const LoginForm = ({ handleLogin, username, password, setUsername, setPassword }
         <div>
           password
           <input
+            data-testid='password'
             type="password"
             value={password}
             name="Password"
@@ -63,9 +65,34 @@ const BlogForm = ({ user, createBlog }) => {
     <div>
       <h2>Add new blog</h2>
       <form onSubmit={addBlog}>
-        <div> title: <input name="title" value={newBlog.title} onChange={handleBlogChange} placeholder='title'/></div>
-        <div> author: <input name="author" value={newBlog.author} onChange={handleBlogChange} placeholder='author'/></div>
-        <div> url: <input name="url" value={newBlog.url} onChange={handleBlogChange} placeholder='url'/></div>
+        <div> title:
+          <input
+            data-testid='title'
+            name="title"
+            value={newBlog.title}
+            onChange={handleBlogChange}
+            placeholder='title'
+          />
+        </div>
+        <div>
+          author:
+          <input
+            data-testid = 'author'
+            name="author"
+            value={newBlog.author}
+            onChange={handleBlogChange}
+            placeholder='author'
+          />
+        </div>
+        <div> url:
+          <input
+            data-testid='url'
+            name="url"
+            value={newBlog.url}
+            onChange={handleBlogChange}
+            placeholder='url'
+          />
+        </div>
         <button type="submit">save</button>
       </form>
     </div>
