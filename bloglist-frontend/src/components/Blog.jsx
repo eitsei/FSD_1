@@ -16,17 +16,60 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
 
   const showAdded = () => {
     if (user) {
+      if(!blog.user){
+        return (
+          <div>
+            Added by non-logged in user
+          </div>
+        )
+      }
+      if((user.id === blog.user) || (user.id === blog.user.id)){
+        return (
+          <div>
+            Added by: {user.name}
+          </div>
+        )}
+      else {
+        return (
+          <div>
+            Added by other user
+          </div>
+        )
+      }
+    } else {
       return (
         <div>
-          Added by: {user.name}
+          Added by other or non-logged in user
+        </div>
+      )
+    }
+  }
+  const showRemove = () => {
+    if (user && blog.user) {
+      if ((user.id === blog.user.id) || (user.id === blog.user)) {
+        return (
+          <div>
+            <button onClick={handleRemove}>Remove</button>
+          </div>
+        )
+      }
+    }
+    return <div></div>
+  }
+  const showLikes = () => {
+    if(blog.user){
+      return (
+        <div>
+            likes : {blog.likes} <button onClick={addLike}>Like!</button>
         </div>
       )
     } else {
       return (
         <div>
-          Added by non-logged in user
+            likes : {blog.likes}
         </div>
       )
+
     }
   }
   const addLike = () => {
@@ -55,13 +98,9 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
           <div>
             url: {blog.url}
           </div>
-          <div>
-          likes : {blog.likes} <button onClick={addLike}>Like!</button>
-          </div>
+          {showLikes()}
           {showAdded()}
-          {user && <div>
-            <button onClick={handleRemove}>Remove</button>
-          </div>}
+          {showRemove()}
         </>
       )}
     </div>

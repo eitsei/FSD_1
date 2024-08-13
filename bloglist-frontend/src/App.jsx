@@ -82,11 +82,12 @@ const App = () => {
     setUser(null)
   }
 
-  const b = user
-    ?
-    blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id)
-    :
-    blogs
+  // const b = user
+  //   ?
+  //   blogs.filter(blog => blog.user && (blog.user.id || blog.user) === user.id)
+  //   :
+  //   blogs
+  const b = blogs
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -121,31 +122,51 @@ const App = () => {
 
   const blogFormRef = useRef()
   return (
-    <div>
+    <div data-testid="blog-container">
       <h1>blogs</h1>
-      <Notification message = {errorMessage}/>
-      {!user &&
-      <div>
-        <Togglable buttonLabel='Open login form'>
-          <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
-        </Togglable>
-      </div>}
-      {user && <div>
-        <p>{user.name} logged in <button type='button' onClick={handleLogout}>logout</button> </p>
-        <Togglable buttonLabel = "Add new blog" ref = {blogFormRef}>
-          <BlogForm
-            user={user}
-            createBlog={addBlog}
-          />
-        </Togglable>
-
-      </div>}
+      <Notification message={errorMessage} />
       {
-        b.length === 0 ? <p> No blogs added. Maybe add a new blog?</p>
-          :
-          b.sort((a,b) => b.likes - a.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} handleLike={handleLike} removeBlog={() => handleRemoveBlog(blog)} user = {user} />)
+        !user &&
+        <div>
+          <Togglable buttonLabel='Open login form'>
+            <LoginForm
+              handleLogin={handleLogin}
+              username={username}
+              password={password}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            />
+          </Togglable>
+        </div>
       }
+      {
+        user &&
+        <div>
+          <p>{user.name} logged in <button type='button' onClick={handleLogout}>logout</button> </p>
+          <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
+            <BlogForm
+              user={user}
+              createBlog={addBlog}
+            />
+          </Togglable>
+        </div>
+      }
+      <div data-testid="blog-section">
+        {b.length === 0 ? (
+          <p data-testid="no-blogs-message">No blogs added. Maybe add a new blog?</p>
+        ) : (
+          b.sort((a, b) => b.likes - a.likes).map(blog => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={handleLike}
+              removeBlog={() => handleRemoveBlog(blog)}
+              user={user}
+              data-testid="blog-item"
+            />
+          ))
+        )}
+      </div>
     </div>
   )
 }

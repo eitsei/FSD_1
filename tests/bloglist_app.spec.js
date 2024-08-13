@@ -85,8 +85,16 @@ describe('Blog app', async () => {
         })
         test('Non-logged user cannot remove blogs', async({page}) => {
             await page.getByRole('button', { name: 'logout' }).click()
-            const firstBlog = page.locator('li').first()
-            console.log(await firstBlog.textContent())
+            const blogs = await page.getByTestId('blog-section')
+
+            const firstBlog = blogs.first()
+
+            // Varmista, että ensimmäinen blogikomponentti on näkyvissä
+            await expect(firstBlog).toBeVisible()
+
+            // Voit myös testata sen sisältöä tai tehdä sille toimintoja
+            const blogTitle = await firstBlog.textContent();
+            console.log(`The title of the first blog is: ${blogTitle}`);
             await firstBlog.locator('button', { hasText: 'View more' }).click()
             await expect(page.getByRole('button', { name: 'Remove' })).toBeHidden()
         })
