@@ -59,13 +59,13 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
   const showLikes = () => {
     if(blog.user){
       return (
-        <div>
+        <div data-testid={'likes'}>
             likes : {blog.likes} <button onClick={addLike}>Like!</button>
         </div>
       )
     } else {
       return (
-        <div>
+        <div data-testid={'likes'}>
             likes : {blog.likes}
         </div>
       )
@@ -86,9 +86,9 @@ const Blog = ({ blog, removeBlog, user, handleLike }) => {
     }
   }
   return (
-    <div style={blogStyle}>
-      <div>
-        {blog.title} by {blog.author}
+    <div style={blogStyle} data-testid={'blog-item'}>
+      <div data-testid={'blog-text'}>
+        {blog.title} by {blog.author}<span> </span>
         <button onClick={toggleVisibility}>
           {visible ? 'Hide!' : 'View more'}
         </button>

@@ -162,7 +162,6 @@ const App = () => {
               handleLike={handleLike}
               removeBlog={() => handleRemoveBlog(blog)}
               user={user}
-              data-testid="blog-item"
             />
           ))
         )}
